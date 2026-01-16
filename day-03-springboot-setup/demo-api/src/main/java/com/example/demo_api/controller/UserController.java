@@ -1,38 +1,49 @@
 package com.example.demoapi.controller;
 
 import com.example.demoapi.model.User;
+import com.example.demoapi.repository.UserRepository;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/users")
 public class UserController {
 
-    private final List<User> users = new ArrayList<>();
+    private final UserRepository userRepository;
 
-    @GetMapping("/health")
-    public String healthCheck() {
-        return "Application is running";
+    public UserController(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    @GetMapping("/users")
+    @PostMapping
+    public User createUser(@RequestBody User user) {
+        return userRepository.save(user);
+    }
+
+    @GetMapping
     public List<User> getAllUsers() {
-        return users;
+        return userRepository.findAll();
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     public User getUserById(@PathVariable Long id) {
-        return users.stream()
-                .filter(user -> user.getId().equals(id))
-                .findFirst()
+        return userRepository.findById(id).orElse(null);
+    }
+
+    @PutMapping("/{id}")
+    public User updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
+        return userRepository.findById(id)
+                .map(user -> {
+                    user.setName(updatedUser.getName());
+                    user.setEmail(updatedUser.getEmail());
+                    return userRepository.save(user);
+                })
                 .orElse(null);
     }
 
-    @PostMapping("/users")
-    public User createUser(@RequestBody User user) {
-        users.add(user);
-        return user;
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable Long id) {
+        userRepository.deleteById(id);
     }
 }
