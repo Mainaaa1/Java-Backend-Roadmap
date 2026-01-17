@@ -1,7 +1,7 @@
-package com.example.demoapi.controller;
+package com.example.demo_api.controller;
 
-import com.example.demoapi.model.User;
-import com.example.demoapi.repository.UserRepository;
+import com.example.demo_api.model.User;
+import com.example.demo_api.repository.UserRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
