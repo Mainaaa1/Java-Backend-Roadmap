@@ -1,5 +1,6 @@
 package com.example.demo_api.controller;
 
+import com.example.demo_api.exception.ResourceNotFoundException;
 import com.example.demo_api.model.User;
 import com.example.demo_api.repository.UserRepository;
 import org.springframework.web.bind.annotation.*;
@@ -28,22 +29,32 @@ public class UserController {
 
     @GetMapping("/{id}")
     public User getUserById(@PathVariable Long id) {
-        return userRepository.findById(id).orElse(null);
+        return userRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found with id: " + id)
+                );
     }
 
     @PutMapping("/{id}")
     public User updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
-        return userRepository.findById(id)
-                .map(user -> {
-                    user.setName(updatedUser.getName());
-                    user.setEmail(updatedUser.getEmail());
-                    return userRepository.save(user);
-                })
-                .orElse(null);
+        User user = userRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found with id: " + id)
+                );
+
+        user.setName(updatedUser.getName());
+        user.setEmail(updatedUser.getEmail());
+
+        return userRepository.save(user);
     }
 
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Long id) {
-        userRepository.deleteById(id);
+        User user = userRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found with id: " + id)
+                );
+
+        userRepository.delete(user);
     }
 }
