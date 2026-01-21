@@ -20,7 +20,7 @@ This day focuses on removing error-handling logic from controllers and enforcing
 ---
 
 ## Important Note
-> **The working implementation for Day 1 is inside the existing Week 1 Spring Boot application folder.**
+> **The working implementation for Day 2 is inside the existing Week 1 Spring Boot application folder.**
 
 No new Spring Boot project was created for this day.  
 All DTOs, mappers, and controller updates were applied **on top of the Week 1 Spring Boot app** to reflect real-world incremental development.
